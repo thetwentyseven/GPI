@@ -10,3 +10,22 @@ Date: 05-11-2016
 html{
   padding: 50px 0px;
 }
+
+input{
+  margin:1em 0em;
+}
+
+
+/* Login/Register Form */
+form.form-signin {
+    padding: 2em;
+    width: 30em;
+}
+
+.login {
+    float: left;
+}
+
+.register {
+    float: right;
+}
