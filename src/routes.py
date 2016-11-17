@@ -1,6 +1,9 @@
 import ConfigParser
+import requests
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, render_template, flash
+from urllib import urlopen
+import json
 
 app = Flask(__name__)
 
@@ -27,12 +30,21 @@ def unauthorized(error):
 def root():
     return render_template('index.html')
 
+@app.route('/api')
+def api():
+    res = requests.get('https://api.openaq.org/v1/locations?country=GB')
+    try:
+        data = res.json()['results']
+    except KeyError:
+        data = None
+    return render_template('api.html', data=data)
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method=='POST':
         email = request.form['email']
         password = request.form['password']
-        #c.execute('SELECT email, password FROM users')
+
         #c.execute('SELECT email, password FROM users WHERE email=? AND password =?', email, password)
         data = 0 #c.fetchone()
         if data:
