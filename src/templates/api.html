@@ -6,9 +6,11 @@
   <h1>Global Pollution Interface (GPI)</h1>
   <h2>API</h2>
   {% if data %}
+    <div id="myfirstchart"></div>
+    <div id="locations"></div>
     <ul>
     {% for d in data %}
-      <li>{{ d.location }}</li>
+      <!-- <li>{{ d.location }}</li> -->
     {% endfor %}
     </ul>
   {% else %}
