@@ -17,15 +17,15 @@ input{
 
 
 /* Login/Register Form */
-form.form-signin {
+form.form-signin, form.form-register {
     padding: 2em;
     width: 30em;
 }
 
 .login {
-    float: left;
+    float: right;
 }
 
 .register {
-    float: right;
+    float: left;
 }

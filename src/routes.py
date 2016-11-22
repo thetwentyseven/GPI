@@ -7,15 +7,21 @@ import json
 
 app = Flask(__name__)
 
-# Database
-conn = sqlite3.connect('database/gpi.db')
-c =  conn.cursor()
-# c.execute('SELECT * FROM users')
-# data = c.fetchall() #single fetchone()
-# print(data)
-# for row in c.fetchall():
-    # print(row)
+# Sessions
+app.secret_key = "super secret key"
 
+# Database
+database = 'database/gpi.db'
+conn = sqlite3.connect(database)
+c =  conn.cursor()
+
+# Functions
+def init_db():
+  with app.app_context():
+    db = get_db()
+    with app.open_resource('database/schema.sql', mode='r') as f:
+      db.cursor().executescript(f.read())
+    db.commit()
 
 # Routes
 @app.errorhandler(404)
@@ -30,6 +36,14 @@ def unauthorized(error):
 def root():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/map')
+def map():
+    return render_template('map.html')
+
 @app.route('/api')
 def api():
     res = requests.get('https://api.openaq.org/v1/locations?country=GB')
@@ -41,17 +55,66 @@ def api():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    if request.method=='POST':
+    info = None
+    alert = None
+    if request.method == 'POST':
+        # Get the data from the form
         email = request.form['email']
         password = request.form['password']
 
-        #c.execute('SELECT email, password FROM users WHERE email=? AND password =?', email, password)
-        data = 0 #c.fetchone()
-        if data:
-            return render_template('login.html', data=data)
-    else:
-        return render_template('login.html')
+        # Check if is in the database
+        db = sqlite3.connect(database)
+        query = db.execute('SELECT * FROM users WHERE email = ? AND password = ?', [email, password])
+        users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
+        if users:
+        # db.close()
+            info = "You are now connected."
+            session['logged'] = True
+            return render_template('login.html', users=users, info=info)
+        else:
+            alert = "The email or password are wrong, or you are not register."
+            return render_template('login.html', users=users, alert=alert)
 
+    else:
+        return render_template('login.html', info=info)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged', None)
+    return redirect(url_for('root'))
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    info = None
+    alert = None
+    if request.method == 'POST':
+        # Get the data from the form
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
+        tpassword = request.form['tpassword']
+        password = request.form['password']
+        # Check if the password matches
+        if tpassword != password:
+            alert = "The password does not match. Try again."
+            return render_template('login.html', info=info, alert=alert)
+
+        # Check if is in the database already
+        db = sqlite3.connect(database)
+        query = db.execute('SELECT * FROM users WHERE email = ?', [email])
+        users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
+        if users:
+            alert = "This user is already on the database."
+            return render_template('login.html', users=users, alert=alert)
+        else:
+            db.execute('INSERT INTO users (firstname,lastname,email,password) VALUES (?,?,?,?)',[firstname,lastname,email,password] )
+            db.commit()
+            db.close()
+            info = "The user has been created."
+            return render_template('login.html', users=users, info=info)
+
+    else:
+        return render_template('login.html', info=info)
 
 # Configuration
 def init(app):

@@ -12,7 +12,7 @@
 
 <body>
 
-  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed"
@@ -28,16 +28,15 @@
     <div id="navbar" class="collapse navbar-collapse navbar-right">
       <ul class="nav navbar-nav">
         <li><a href="{{ url_for('api') }}">API</a></li>
-        <li><a href="#">Map</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="{{ url_for('map') }}">Map</a></li>
+        <li><a href="{{ url_for('about') }}">About</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
             <span class="caret"></span></a>
           <ul class="dropdown-menu">
             {% if session.logged %}
-            <li><a href="#">Log out</a></li>
+            <li><a href="{{ url_for('logout') }}">Log out</a></li>
             {% else %}
             <li><a href="{{ url_for('login') }}">Login</a></li>
             {% endif %}
