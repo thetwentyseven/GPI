@@ -2,10 +2,42 @@
 
 {% block content %}
 
+{% if info %}
+<div class="alert alert-info">
+  <strong>Info!</strong> {{ info }}
+</div>
+{% endif %}
+
+{% if alert %}
+<div class="alert alert-danger">
+  <strong>Alert!</strong> {{ alert }}
+</div>
+{% endif %}
+
 <div class="container">
   <h1>Profile</h1>
-  <p class="lead">
-    
-  </p>
+
+  {% if users %}
+  <div class="update">
+    <form class="form-register" name="form-register" action="{{ url_for('update') }}" method="post">
+      <h2 class="form-signin-heading">Edit your details</h2>
+      <label for="firstname" class="sr-only">Firstname</label>
+      <input type="text" id="firstname" name="firstname" class="form-control" value="{{ users.firstname }}" required autofocus>
+      <label for="lastname" class="sr-only">Lastname</label>
+      <input type="text" id="lastname" name="lastname" class="form-control" value="{{ users.lastname }}" required autofocus>
+      <label for="username" class="sr-only">Email address</label>
+      <input type="text" id="email" name="email" class="form-control" value="{{ users.email }}" required autofocus>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="tpassword" name="tpassword" class="form-control" required>
+      <label for="password" class="sr-only">Repeat Password</label>
+      <input type="password" id="password" name="password" class="form-control" required>
+      <button class="btn btn-lg btn-success btn-block" type="submit" value="Update">Update</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="">
+    <p>I am sorry, what a shame! We do not know who you are.</p>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}}

@@ -70,6 +70,7 @@ def login():
         # db.close()
             info = "You are now connected."
             session['logged'] = True
+            session['id'] = users[0]['id']
             return render_template('login.html', users=users, info=info)
         else:
             alert = "The email or password are wrong, or you are not register."
@@ -115,6 +116,57 @@ def register():
 
     else:
         return render_template('login.html', info=info)
+
+@app.route('/profile')
+def profile():
+    if not session.get('logged'):
+        abort(401)
+    id = session['id']
+    db = sqlite3.connect(database)
+    query = db.execute('SELECT * FROM users WHERE id = ?', [id])
+    users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
+    users = users[0]
+    if users:
+        return render_template('profile.html', users=users)
+    else:
+        return render_template('profile.html')
+
+@app.route('/update', methods=['POST', 'GET'])
+def update():
+    info = None
+    alert = None
+    if not session.get('logged'):
+        abort(401)
+    # Get the data from the form
+    if request.method == 'POST':
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
+        tpassword = request.form['tpassword']
+        password = request.form['password']
+        # Create a dict to pass it to profile again
+        users = {}
+        users["firstname"] = firstname
+        users["lastname"] = lastname
+        users["email"] = email
+        users["tpassword"] = tpassword
+        users["password"] = password
+
+        # Check if the password matches
+        if tpassword != password:
+            alert = "The password does not match. Try again."
+            return render_template('profile.html', info=info, alert=alert, users=users)
+        # Update the user
+        id = session.get('id')
+        db = sqlite3.connect(database)
+        db.execute('UPDATE users SET id = ?, firstname = ?, lastname = ?, password = ? WHERE id = ?', [id, firstname, lastname, password, id])
+        db.commit()
+        db.close()
+        info = "The user has been updated."
+        return render_template('profile.html', id=id, info=info, users=users)
+    else:
+        alert = "Nothing was send through the form."
+        return render_template('profile.html', alert=alert)
 
 # Configuration
 def init(app):

@@ -36,6 +36,7 @@
             <span class="caret"></span></a>
           <ul class="dropdown-menu">
             {% if session.logged %}
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Log out</a></li>
             {% else %}
             <li><a href="{{ url_for('login') }}">Login</a></li>
