@@ -34,7 +34,13 @@ def unauthorized(error):
 
 @app.route('/')
 def root():
-    return render_template('index.html')
+    res = requests.get('https://api.openaq.org/v1/countries?limit=1000')
+    try:
+        data = res.json()['results']
+    except KeyError:
+        data = None
+    return render_template('index.html', data=data)
+
 
 @app.route('/about')
 def about():
@@ -44,15 +50,34 @@ def about():
 def map():
     return render_template('map.html')
 
+## APIs routes
 @app.route('/api')
 def api():
-    res = requests.get('https://api.openaq.org/v1/locations?country=GB')
+    country = 'GB'
+    res = requests.get('https://api.openaq.org/v1/locations?country='+ country +'&limit=15')
     try:
         data = res.json()['results']
     except KeyError:
         data = None
     return render_template('api.html', data=data)
 
+@app.route('/country', methods=['POST', 'GET'])
+def country():
+    info = None
+    alert = None
+    if request.method == 'POST':
+        country = request.form['country']
+        res = requests.get('https://api.openaq.org/v1/locations?country='+ country +'&limit=1000')
+        try:
+            data = res.json()['results']
+        except KeyError:
+            data = None
+        return render_template('cities.html', data=data)
+    else:
+        alert = "Sorry but there is a problem"
+        return render_template('country.html', alert=alert)
+
+## User and profile routes
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     info = None
@@ -66,15 +91,16 @@ def login():
         db = sqlite3.connect(database)
         query = db.execute('SELECT * FROM users WHERE email = ? AND password = ?', [email, password])
         users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
+        users = users[0]
         if users:
         # db.close()
             info = "You are now connected."
             session['logged'] = True
-            session['id'] = users[0]['id']
-            return render_template('login.html', users=users, info=info)
+            session['id'] = users['id']
+            return render_template('profile.html', users=users, info=info)
         else:
             alert = "The email or password are wrong, or you are not register."
-            return render_template('login.html', users=users, alert=alert)
+            return render_template('login.html', alert=alert)
 
     else:
         return render_template('login.html', info=info)
@@ -104,6 +130,7 @@ def register():
         db = sqlite3.connect(database)
         query = db.execute('SELECT * FROM users WHERE email = ?', [email])
         users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
+        users = users[0]
         if users:
             alert = "This user is already on the database."
             return render_template('login.html', users=users, alert=alert)

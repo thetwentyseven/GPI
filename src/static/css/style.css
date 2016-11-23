@@ -29,3 +29,10 @@ form.form-signin, form.form-register {
 .register {
     float: left;
 }
+
+
+.panel.panel-default {
+    width: 30.333% !important;
+    float: left !important;
+    margin: 1em !important;
+}

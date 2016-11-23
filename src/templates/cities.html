@@ -1,0 +1,41 @@
+{% extends "header.html" %}
+
+{% block content %}
+
+<div class="container">
+
+  {% if data %}
+
+    {% for d in data %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ d.city }} - {{ d.location }}
+      </div>
+      <div class="panel-body">
+        <form class="" action="{{ url_for('country') }}" method="post">
+          <ul>
+            <li>Country: {{ d.country }}</li>
+            <li>Source: {{ d.sourceName }}</li>
+            <li>Parameters available: {{ d.parameters }}</li>
+            <li>First update: {{ d.firstUpdated }}</li>
+            <li>Last update: {{ d.lastUpdated }}</li>
+            <li>Parameters availables: {{ d.country }}</li>
+            <li>Number of readings: {{ d.count }}</li>
+          </ul>
+          <input type="hidden" name="country" value="{{ d.code }}">
+          <button class="btn btn-info right" type="submit" value="check">Check</button>
+        </form>
+      </div>
+    </div>
+
+    {% endfor %}
+
+  {% else %}
+    <p class="lead">
+      You should not see this msg, otherwise, check the code again.
+    </p>
+  {% endif %}
+
+</div>
+{% endblock %}}

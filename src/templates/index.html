@@ -10,5 +10,31 @@
     Edinburgh, Scotland. It is created with a Levinux server, python, bootstrap
     (HTML+CSS+JavaScript) and SQLite3 database.
   </p>
+
+  {% if data %}
+    <div class="">
+    {% for d in data %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ d.name }} - {{ d.code }}</div>
+      <div class="panel-body">
+        <form class="" action="{{ url_for('country') }}" method="post">
+          Number of cities: {{ d.cities }} <br />
+          Number of readings: {{ d.count }} <br />
+          <input type="hidden" name="country" value="{{ d.code }}">
+          <button class="btn btn-info" type="submit" value="check">Check</button>
+        </form>
+      </div>
+    </div>
+
+
+    {% endfor %}
+    </div>
+  {% else %}
+    <p class="lead">
+      You should not see this msg, otherwise, check the code again.
+    </p>
+  {% endif %}
+
 </div>
 {% endblock %}}
