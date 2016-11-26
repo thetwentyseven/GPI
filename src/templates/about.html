@@ -3,10 +3,17 @@
 {% block content %}
 
 <div class="container">
+  <ul class="breadcrumb">
+    <li><a href="{{ url_for('root') }}">Home</a></li>
+    <li><a href="#" class="active">About</a></li>
+  </ul>
+
   <h1>Global Pollution Interface (GPI)</h1>
   <h2>About</h2>
   <p class="lead">
-
+    This is a website created by Adrian Vazquez for the Napier University,
+    Edinburgh, Scotland. It is created with a Levinux server, python, bootstrap
+    (HTML+CSS+JavaScript) and SQLite3 database.
   </p>
 </div>
 {% endblock %}}

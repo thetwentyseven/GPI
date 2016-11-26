@@ -15,6 +15,24 @@ input{
   margin:1em 0em;
 }
 
+ul.breadcrumb {
+    margin: 2em 0em;
+}
+
+a{color: #3498db;}
+
+a:hover{color: #3498db;}
+
+
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #3498db;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+    color: #3498db;
+    background-color: transparent;
+}
 
 /* Login/Register Form */
 form.form-signin, form.form-register {
@@ -30,9 +48,6 @@ form.form-signin, form.form-register {
     float: left;
 }
 
-
-.panel.panel-default {
-    width: 30.333% !important;
-    float: left !important;
-    margin: 1em !important;
+form {
+    margin: 0;
 }

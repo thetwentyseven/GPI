@@ -1,0 +1,64 @@
+{% extends "header.html" %}
+
+{% block content %}
+
+{% if info %}
+<div class="alert alert-info">
+  <strong>Info!</strong> {{ info }}
+</div>
+{% endif %}
+
+{% if alert %}
+<div class="alert alert-danger">
+  <strong>Alert!</strong> {{ alert }}
+</div>
+{% endif %}
+
+<div class="container">
+
+  <ul class="breadcrumb">
+    <li><a href="{{ url_for('root') }}">Home</a></li>
+    <li><a href="{{ url_for('country') }}">Country</a></li>
+    <li><a href="#" class="active">City</a></li>
+  </ul>
+
+  {% if data %}
+
+    {% for d in data %}
+
+    {% if session.logged %}
+    <div class="col-md-12">
+        <form class="save" action="{{ url_for('save') }}" method="post">
+          <input type="hidden" id="userLocation" name="userLocation" value="{{ d.location }}">
+          <button type="submit" value="check" class="btn btn-primary" name="button">
+            <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"> Save</span>
+          </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="col-md-6">
+      <h1 id="location">{{ d.location }}</h1>
+      <h2>{{ d.city }}, {{ d.country }}</h2>
+      <h3>Parameters available: {% for c in d.parameters %} {{ c }} {% endfor %}</h3>
+      <h4>Last Update: {{ d.lastUpdated }}</h4>
+      <h5>Source: {{ d.sourceName }}</h5>
+    </div>
+
+
+
+    {% endfor %}
+    <div class="col-md-12">
+      <button type="button" class="btn btn-primary" onclick="displayChart()">
+        <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> Display chart
+      </button>
+      <div id="myfirstchart"></div>
+    </div>
+  {% else %}
+    <p class="lead">
+      You should not see this msg, otherwise, check the code again.
+    </p>
+  {% endif %}
+
+</div>
+{% endblock %}}

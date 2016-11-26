@@ -3,37 +3,116 @@
 {% block content %}
 
 <div class="container">
-  <h1>Global Pollution Interface (GPI)</h1>
-  <h2>Introduction</h2>
-  <p class="lead">
-    This is a website created by Adrian Vazquez for the Napier University,
-    Edinburgh, Scotland. It is created with a Levinux server, python, bootstrap
-    (HTML+CSS+JavaScript) and SQLite3 database.
-  </p>
+  <ul class="breadcrumb">
+    <li><a href="{{ url_for('root') }}" class="active">Home</a></li>
+  </ul>
+
+
+  <div class="jumbotron">
+    <h1>Global Pollution Interface (GPI)</h1>
+    <blockquote>Air pollution is the introduction of particulates, biological molecules,
+    and other harmful substances into Earth's atmosphere, causing diseases, allergies, death to humans,
+    damage to other living organisms such as animals and food crops, or the natural or built environment.
+    <small><cite title="Source Title">Wikipedia</cite></small>
+    </blockquote>
+    <p>The data display in this web application is from <a href="https://docs.openaq.org/">OpenAQ</a>, an organization that collect
+    data from 33 differnt countries from real-time goverment and research grade sources.</p>
+    <p><a class="btn btn-primary btn-lg" href="{{ url_for('api') }}">Learn more of the API</a></p>
+  </div>
+
 
   {% if data %}
-    <div class="">
-    {% for d in data %}
-
-    <div class="panel panel-default">
-      <div class="panel-heading">{{ d.name }} - {{ d.code }}</div>
+  <div class="col-md-6">
+    <p>Major primary pollutants produced by human activity include:</p>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Nitrogen dioxide - NO2</h3>
+      </div>
       <div class="panel-body">
-        <form class="" action="{{ url_for('country') }}" method="post">
-          Number of cities: {{ d.cities }} <br />
-          Number of readings: {{ d.count }} <br />
-          <input type="hidden" name="country" value="{{ d.code }}">
-          <button class="btn btn-info" type="submit" value="check">Check</button>
-        </form>
+        <p>For the public, chronic exposure to NO2 can cause respiratory effects including airway inflammation
+        in healthy people and increased respiratory symptoms in people with asthma.</p>
+        <p>NO2 creates ozone which causes eye
+        irritation and exacerbates respiratory conditions, leading to increased visits to emergency departments and hospital
+        admissions for respiratory issues, especially asthma.</p>
       </div>
     </div>
 
-
-    {% endfor %}
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Ozone - 03</h3>
+      </div>
+      <div class="panel-body">
+        <p>Ozone precursors are a group of pollutants, predominantly those emitted during the combustion of fossil fuels.</p>
+        <p>There is a great deal of evidence to show that ground level ozone can harm lung function and irritate the respiratory
+        system. Exposure to ozone (and the pollutants that produce it) is linked to premature death, asthma, bronchitis,
+        heart attack, and other cardiopulmonary problems.</p>
+      </div>
     </div>
-  {% else %}
-    <p class="lead">
-      You should not see this msg, otherwise, check the code again.
-    </p>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Particulates - PM 10</h3>
+      </div>
+      <div class="panel-body">
+        <p>Atmospheric particulate matter – also known as particulate matter (PM) or particulates –
+          are microscopic solid or liquid matter suspended in the Earth's atmosphere.</p>
+        <p>The term aerosol commonly refers to the particulate/air mixture, as opposed to the particulate matter alone.
+           Sources of particulate matter can be man-made or natural. They have impacts on climate and precipitation
+           that adversely affect human health.</p>
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Particulates - PM 2.5</h3>
+      </div>
+      <div class="panel-body">
+        <p>The difference between PM 10 and PM 2.5 is size.</p>
+        <p>The smaller PM2.5 were particularly deadly, with a 36% increase
+          in lung cancer per 10 μg/m3 as it can penetrate deeper into the lungs.</p>
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Sulfur dioxide - SO2</h3>
+      </div>
+      <div class="panel-body">
+        <p>Sulfur dioxide is a major air pollutant and has significant impacts upon human health.</p>
+        <p>In addition, the concentration of sulfur dioxide in the atmosphere can influence the habitat
+        suitability for plant communities, as well as animal life. Sulfur dioxide emissions are a
+        precursor to acid rain and atmospheric particulates.</p>
+      </div>
+    </div>
+
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h3>Countries</h3>
+    <p>Here you can find a list of countries which contains information about their mesurements.
+    Depending of the source, there measurements of no2, o3, pm10, pm25, or so2.</p>
+    <table class="table table-striped table-hover ">
+      <thead>
+        <tr>
+          <th>Country</th>
+          <th>Cities</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in data %}
+        <form class="" action="{{ url_for('country') }}" method="post">
+        <tr>
+          <td>{{ d.name }} - {{ d.code }}</td>
+          <td>{{ d.cities }}</td>
+          <td><button class="btn btn-info" type="submit" value="check">Check</button></td>
+          <input type="hidden" name="country" value="{{ d.code }}">
+        </tr>
+        </form>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% endif %}
 
 </div>

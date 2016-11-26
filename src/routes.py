@@ -46,9 +46,6 @@ def root():
 def about():
     return render_template('about.html')
 
-@app.route('/map')
-def map():
-    return render_template('map.html')
 
 ## APIs routes
 @app.route('/api')
@@ -75,7 +72,23 @@ def country():
         return render_template('cities.html', data=data)
     else:
         alert = "Sorry but there is a problem"
-        return render_template('country.html', alert=alert)
+        return render_template('cities.html', alert=alert)
+
+@app.route('/city', methods=['POST', 'GET'])
+def city():
+    info = None
+    alert = None
+    if request.method == 'POST':
+        location = request.form['location']
+        res = requests.get('https://api.openaq.org/v1/locations?location='+ location +'&limit=1')
+        try:
+            data = res.json()['results']
+        except KeyError:
+            data = None
+        return render_template('city.html', data=data)
+    else:
+        alert = "Sorry but there is a problem"
+        return render_template('city.html', alert=alert)
 
 ## User and profile routes
 @app.route('/login', methods=['POST', 'GET'])
@@ -194,6 +207,17 @@ def update():
     else:
         alert = "Nothing was send through the form."
         return render_template('profile.html', alert=alert)
+
+@app.route('/save', methods=['POST'])
+def save():
+    info = None
+    alert = None
+    if not session.get('logged'):
+        abort(401)
+    id = session['id']
+    location = request.form['location'];
+    info = "Hell, yeah!"
+    return render_template('city.html', info=info)
 
 # Configuration
 def init(app):
