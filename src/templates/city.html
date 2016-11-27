@@ -48,21 +48,39 @@
     <p>Do you want to add it to your favorites? Register <a href="{{ url_for('login') }}">here.</a></p>
     {% endif %}
 
-    <div class="col-md-6">
-      <h1 id="location">{{ d.location }}</h1>
-      <h2>{{ d.city }}, {{ d.country }}</h2>
-      <h3>Parameters available: {% for c in d.parameters %} {{ c }} {% endfor %}</h3>
-      <h4>Last Update: {{ d.lastUpdated }}</h4>
-      <h5>Source: {{ d.sourceName }}</h5>
+    <div class="row">
+      <div class="col-md-6">
+        <h1 id="location">{{ d.location }}</h1>
+        <h2>{{ d.city }}, {{ d.country }}</h2>
+        <h5>Last Update: {{ d.lastUpdated }}</h5>
+        <h5>Source: {{ d.sourceName }}</h5>
+      </div>
+
+      <div class="col-md-6">
+        <h3>Parameters available:</h3>
+        {% for c in d.parameters %}
+        <div class="locations">
+          <button type="button" class="btn btn-primary" onclick="display{{ c }}()">
+            <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> {{ c }} chart
+          </button>
+        </div>
+        {% endfor %}
+      </div>
     </div>
 
-    {% endfor %}
-    <div class="col-md-12">
-      <button type="button" class="btn btn-primary" onclick="displayChart()">
-        <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> Display chart
-      </button>
-      <div id="myfirstchart"></div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="thechart"></div>
+      </div>
+
+      <div class="col-md-6">
+        <div id="theinfo"></div>
+      </div>
     </div>
+
+
+    {% endfor %}
+
   {% else %}
     <p class="lead">
       You should not see this msg, otherwise, check the code again.

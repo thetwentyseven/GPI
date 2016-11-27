@@ -76,18 +76,23 @@ def country():
         alert = "Sorry but there is a problem"
         return render_template('cities.html', alert=alert)
 
+
 @app.route('/city', methods=['POST', 'GET'])
 def city():
     info = None
     alert = None
+    id = None
     if request.method == 'POST':
         location = request.form['location']
         res = requests.get('https://api.openaq.org/v1/locations?location='+ location +'&limit=1')
 
-        id = session['id']
-        db = sqlite3.connect(database)
-        query = db.execute('SELECT * FROM favorites WHERE user_id = ? AND location = ?', [id, location])
-        favorites = [dict(id=row[0], user_id=row[1], location=row[2]) for row in query.fetchall()]
+        if (session.get('id') == True):
+            id = session['id']
+            db = sqlite3.connect(database)
+            query = db.execute('SELECT * FROM favorites WHERE user_id = ? AND location = ?', [id, location])
+            favorites = [dict(id=row[0], user_id=row[1], location=row[2]) for row in query.fetchall()]
+        else:
+            favorites = None
         try:
             data = res.json()['results']
         except KeyError:
