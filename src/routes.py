@@ -23,6 +23,14 @@ def init_db():
       db.cursor().executescript(f.read())
     db.commit()
 
+
+def get_db():
+  db = getattr(g, 'db', None)
+  if db is None:
+    db = sqlite3.connect(database)
+    g.db = db
+    return db
+
 # Routes
 @app.errorhandler(404)
 def page_not_found(error):
@@ -50,13 +58,7 @@ def about():
 ## APIs routes
 @app.route('/api')
 def api():
-    country = 'GB'
-    res = requests.get('https://api.openaq.org/v1/locations?country='+ country +'&limit=15')
-    try:
-        data = res.json()['results']
-    except KeyError:
-        data = None
-    return render_template('api.html', data=data)
+    return render_template('api.html')
 
 @app.route('/country', methods=['POST', 'GET'])
 def country():
@@ -81,11 +83,16 @@ def city():
     if request.method == 'POST':
         location = request.form['location']
         res = requests.get('https://api.openaq.org/v1/locations?location='+ location +'&limit=1')
+
+        id = session['id']
+        db = sqlite3.connect(database)
+        query = db.execute('SELECT * FROM favorites WHERE user_id = ? AND location = ?', [id, location])
+        favorites = [dict(id=row[0], user_id=row[1], location=row[2]) for row in query.fetchall()]
         try:
             data = res.json()['results']
         except KeyError:
             data = None
-        return render_template('city.html', data=data)
+        return render_template('city.html', data=data, favorites=favorites)
     else:
         alert = "Sorry but there is a problem"
         return render_template('city.html', alert=alert)
@@ -110,7 +117,11 @@ def login():
             info = "You are now connected."
             session['logged'] = True
             session['id'] = users['id']
-            return render_template('profile.html', users=users, info=info)
+            id = session['id']
+            db = sqlite3.connect(database)
+            query = db.execute('SELECT * FROM favorites WHERE user_id = ?', [id])
+            favorites = [dict(id=row[0], user_id=row[1], location=row[2]) for row in query.fetchall()]
+            return render_template('profile.html', users=users, info=info, favorites=favorites)
         else:
             alert = "The email or password are wrong, or you are not register."
             return render_template('login.html', alert=alert)
@@ -143,7 +154,7 @@ def register():
         db = sqlite3.connect(database)
         query = db.execute('SELECT * FROM users WHERE email = ?', [email])
         users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
-        users = users[0]
+        #users = users[0]
         if users:
             alert = "This user is already on the database."
             return render_template('login.html', users=users, alert=alert)
@@ -167,7 +178,10 @@ def profile():
     users = [dict(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4]) for row in query.fetchall()]
     users = users[0]
     if users:
-        return render_template('profile.html', users=users)
+        db = sqlite3.connect(database)
+        query = db.execute('SELECT * FROM favorites WHERE user_id = ?', [id])
+        favorites = [dict(id=row[0], user_id=row[1], location=row[2]) for row in query.fetchall()]
+        return render_template('profile.html', users=users, favorites=favorites)
     else:
         return render_template('profile.html')
 
@@ -210,13 +224,33 @@ def update():
 
 @app.route('/save', methods=['POST'])
 def save():
-    info = None
-    alert = None
     if not session.get('logged'):
         abort(401)
+    # Get the user id and location
     id = session['id']
-    location = request.form['location'];
-    info = "Hell, yeah!"
+    location = request.form['userLocation'];
+    # Intert it on the database
+    db = sqlite3.connect(database)
+    db.execute('INSERT INTO favorites (user_id,location) VALUES (?,?)',[id,location] )
+    db.commit()
+    db.close()
+    info = "Saved!"
+    return render_template('city.html', info=info)
+
+@app.route('/remove', methods=['POST'])
+def remove():
+    if not session.get('logged'):
+        abort(401)
+    # Get the user id and location
+    id = session['id']
+    location = request.form['userLocation'];
+    # Intert it on the database
+    db = sqlite3.connect(database)
+    cur = db.cursor()
+    cur.execute('DELETE FROM favorites WHERE user_id = ? AND location = ?', [id, location])
+    db.commit()
+    db.close()
+    info = "Removed!"
     return render_template('city.html', info=info)
 
 # Configuration

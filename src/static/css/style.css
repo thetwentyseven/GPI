@@ -23,6 +23,10 @@ a{color: #3498db;}
 
 a:hover{color: #3498db;}
 
+.locations{
+  margin:0.5em;
+  float:left;
+}
 
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
     color: #3498db;

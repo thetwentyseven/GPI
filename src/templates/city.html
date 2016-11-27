@@ -27,14 +27,25 @@
     {% for d in data %}
 
     {% if session.logged %}
-    <div class="col-md-12">
-        <form class="save" action="{{ url_for('save') }}" method="post">
-          <input type="hidden" id="userLocation" name="userLocation" value="{{ d.location }}">
-          <button type="submit" value="check" class="btn btn-primary" name="button">
-            <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"> Save</span>
-          </button>
-        </form>
-    </div>
+
+      {% if favorites %}
+      <div class="col-md-12">
+        <input type="hidden" id="userLocation" name="userLocation" value="{{ d.location }}">
+        <button type="submit" value="check" class="btn btn-primary" id="remove-location">
+          <span class="glyphicon glyphicon-heart" aria-hidden="true"> Remove</span>
+        </button>
+      </div>
+      {% else %}
+      <div class="col-md-12">
+        <input type="hidden" id="userLocation" name="userLocation" value="{{ d.location }}">
+        <button type="submit" value="check" class="btn btn-primary" id="add-location">
+          <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"> Save</span>
+        </button>
+      </div>
+      {% endif %}
+
+    {% else %}
+    <p>Do you want to add it to your favorites? Register <a href="{{ url_for('login') }}">here.</a></p>
     {% endif %}
 
     <div class="col-md-6">
@@ -44,8 +55,6 @@
       <h4>Last Update: {{ d.lastUpdated }}</h4>
       <h5>Source: {{ d.sourceName }}</h5>
     </div>
-
-
 
     {% endfor %}
     <div class="col-md-12">

@@ -1,9 +1,48 @@
+// Function to save to favorites
+$(function() {
+  $('#add-location').click(function() {
+      $.ajax({
+          type: "POST",
+          url: '/save',
+          data: $('#userLocation').serialize(),
+          success: function(response) {
+            $('.glyphicon-heart-empty').addClass('glyphicon-heart');
+            $('.glyphicon-heart').removeClass('glyphicon-heart-empty');
+            $('#add-location').attr('id', 'remove-location');
+            console.log(response);
+          },
+          error: function(error) {
+              console.log(error);
+          }
+      });
+  });
+});
+
+// Function to remove from favorites
+ $(document).on('click', '#remove-location', function() {
+      $.ajax({
+          type: "POST",
+          url: '/remove',
+          data: $('#userLocation').serialize(),
+          success: function(response) {
+            $('.glyphicon-heart').addClass('glyphicon-heart-empty');
+            $('.glyphicon-heart-empty').removeClass('glyphicon-heart');
+            $('#remove-location').attr('id', 'add-location');
+            console.log(response);
+          },
+          error: function(error) {
+              console.log(error);
+          }
+      });
+
+  });
 
 
+// Function to display the chart
 function displayChart(){
   var location = document.getElementById('userLocation').value;
   var graph_data = [];
-  
+
   var chart = new Morris.Line({
     // ID of the element in which to draw the chart.
     element: 'myfirstchart',
