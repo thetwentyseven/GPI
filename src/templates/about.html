@@ -9,10 +9,60 @@
   </ul>
 
   <h1>About</h1>
-  <p class="lead">
+  <p>
     This is a website created by Adrian Vazquez for the Napier University,
     Edinburgh, Scotland. It is created with a Levinux server, python, bootstrap
     (HTML+CSS+JavaScript) and SQLite3 database.
   </p>
+
+  <p>
+    The objective of the project is to create a web application with python flask, in a learning environment
+    Linux-based server set-up, called Levinux. We must demonstrate a good level building python flask applications,
+    covering aspects such as routing, URL hierarchy design, static files, request, templates, redirects, responses,
+    templates, sessions, logging, testing, CSS, JavaScript, multiple users, and data storage. Also, I have implemented
+    other technologies like JSON APIs, and AJAX.
+  </p>
+  <p>
+    All the source code has been uploaded to a Git repository where is available also the developing process or “commits”
+    that I updated during the project where other possible developers can see helpful messages about the changes that I made
+    in the code.  Also, this repository has a README file where explain how set up the web application.
+  </p>
+  <p>
+    This is a web application which collect information from an API called OpenAQ where collect data from agencies or
+    governments all over the world about pollution in their countries and cities. At this moment, there are 33 different
+    countries and 4.450 cities with different pollution measurements and we can display these data on the web application.
+  </p>
+  There are different pollution measurements like:
+  <ul>
+    <li>PM2.5</li>
+    <li>PM10</li>
+    <li>Ozone (O3)</li>
+    <li>Sulfur dioxide (SO2)</li>
+    <li>Nitrogen dioxide (NO2)</li>
+    <li>Carbon monoxide (CO)</li>
+    <li>Black carbon (BC)</li>
+  </ul>
+
+  <p>
+    Inside the website also explain briefly these elements, how they are produce and the impact on health’s population.
+    Not all the cities have these measurements, there are some which just have one are there are some cities that have most
+    of them, and that’s depends on the agency or government who provide the data.
+  </p>
+
+  <p>
+    Also, the APIs has a limitation of 1000 request, for that reason, is time limited to the last 1000 measurements which cover
+     around the last two weeks.
+  </p>
+
+  <p>
+    A line chart displays these data where x represent the time, and line y represents the value, depending on the measurement
+    minimum and maximum. For the line chart, I use Morris.js [12] which is an API which generate the graphic wanted with a JavaScript called.
+  </p>
+
+  <p>
+    Also, I have implemented a database with for users, which a user can register, log in into the platform, and save their
+    favourites locations.
+  </p>
+
 </div>
 {% endblock %}}
